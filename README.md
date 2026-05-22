@@ -108,6 +108,7 @@ CANCELLED를 제외한 활성 신청 수를 기준으로 정원 초과 여부를
 | PATCH | `/enrollments/{id}/confirm` | 결제 확정 (CONFIRMED) | X-User-Id |
 | PATCH | `/enrollments/{id}/cancel` | 수강 취소 | X-User-Id |
 | GET | `/enrollments/me` | 내 수강 신청 목록 | X-User-Id |
+| GET | `/classes/{classId}/enrollments` | 강의별 수강생 목록(크리에이터용) | X-User-Id |
 
 ## 공통 응답 코드 
 
@@ -116,7 +117,8 @@ CANCELLED를 제외한 활성 신청 수를 기준으로 정원 초과 여부를
 | 409 | ENROLLMENT_CAPACITY_EXCEEDED | 정원 초과 |
 | 409 | ENROLLMENT_DUPLICATE | 중복 신청 |
 | 400 | INVALID_STATUS_TRANSITION | 잘못된 상태 전이 |
-| 403 | UNAUTHORIZED_ACTION | 본인 외 리소스 접근 |
+| 403 | NOT_CLASS_OWNER | 크리에이터 외 리소스 접근 |
+| 403 | NOT_ENROLLMENT_OWNER | 본인 외 리소스 접근 |
 
 
 ### 요청 / 응답 예시
@@ -168,7 +170,6 @@ CANCELLED를 제외한 활성 신청 수를 기준으로 정원 초과 여부를
 }
 ```
 
-
 **결제 대기 상태 취소 시**
 ```json
 // PATCH /enrollments/1/cancel
@@ -183,6 +184,38 @@ CANCELLED를 제외한 활성 신청 수를 기준으로 정원 초과 여부를
     "createdAt": "2026-05-22T14:19:57.681729"
 }
 ```
+
+**강의별 수강생 목록**
+```json
+// Response 200
+[
+    {
+        "id": 1,
+        "userId": 1,
+        "status": "CONFIRMED"
+    },
+    {
+        "id": 2,
+        "userId": 2,
+        "status": "PENDING"
+    },
+    {
+        "id": 3,
+        "userId": 3,
+        "status": "PENDING"
+    }
+]
+```
+
+**크리에이터가 아닌 사람 접근 시**
+```json
+// Response 403
+{
+    "code": "NOT_CLASS_OWNER",
+    "message": "강의 개설자만 접근할 수 있습니다."
+}
+```
+
 ---
 
 ## 데이터 모델 설명
@@ -228,11 +261,16 @@ enrollments
 | 분류 | 테스트 내용 |
 |------|------------|
 | 단위 | Class 상태 전이 규칙 (DRAFT→OPEN→CLOSED, 역방향 예외) |
-| 단위 | DRAFT 상태 강의 신청 시 예외 |
-| 단위 | 중복 신청 시 예외 |
 | 단위 | CONFIRMED 후 7일 초과 취소 시 예외 |
+| 통합 | DRAFT 상태 강의 신청 시 예외 |
+| 통합 | 중복 신청 시 예외 |
 | 통합 | 동시에 30개의 요청을 보내더라도 최종 CONFIRMED/PENDING 합계가 정원을 초과하지 않는지 검증 |
 | 통합 | PENDING 상태 취소 후 정원 반환 확인 |
+| 통합 | 본인 아닌 사용자 confirm 시 예외 |
+| 통합 | 본인 아닌 사용자 cancel 시 예외 |
+| 통합 | 크리에이터가 수강생 목록 조회 성공 |
+| 통합 | 크리에이터 아닌 사용자 수강생 목록 조회 시 예외 |
+
 
 ---
 
