@@ -110,7 +110,13 @@ CANCELLED를 제외한 활성 신청 수를 기준으로 정원 초과 여부를
 | GET | `/enrollments/me` | 내 수강 신청 목록 | X-User-Id |
 
 ## 공통 응답 코드 
-넣을지 말지 고민중
+
+| HTTP | code | 설명 |
+|------|------|------|
+| 409 | ENROLLMENT_CAPACITY_EXCEEDED | 정원 초과 |
+| 409 | ENROLLMENT_DUPLICATE | 중복 신청 |
+| 400 | INVALID_STATUS_TRANSITION | 잘못된 상태 전이 |
+| 403 | UNAUTHORIZED_ACTION | 본인 외 리소스 접근 |
 
 
 ### 요청 / 응답 예시
