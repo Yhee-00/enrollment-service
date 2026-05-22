@@ -31,7 +31,7 @@ class EnrollmentTest {
     }
 
     @Test
-    void CONFIRMED가_아닌_상태에서_confirm_시_예외() {
+    void PENDING이_아닌_상태에서_confirm_시_예외() {
         Enrollment enrollment = Enrollment.create(1L, 1L);
         enrollment.cancel();
 
