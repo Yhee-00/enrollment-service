@@ -7,6 +7,7 @@ import com.example.enrollment.domain.clazz.Class;
 import com.example.enrollment.domain.clazz.ClassStatus;
 import com.example.enrollment.domain.enrollment.Enrollment;
 import com.example.enrollment.domain.enrollment.EnrollmentRepository;
+import com.example.enrollment.presentation.EnrollmentDetailResponse;
 import com.example.enrollment.presentation.EnrollmentResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -67,6 +68,17 @@ public class EnrollmentService {
     public List<EnrollmentResponse> findMyEnrollments(Long userId) {
         return enrollmentRepository.findAllByUserId(userId).stream()
                 .map(EnrollmentResponse::from)
+                .toList();
+    }
+
+    public List<EnrollmentDetailResponse> getEnrollmentsByClass(Long classId, Long userId) {
+        Class clazz = classRepository.findById(classId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CLASS_NOT_FOUND));
+        if(!clazz.getCreatorId().equals(userId)){
+            throw new BusinessException(ErrorCode.NOT_CLASS_OWNER);
+        }
+        return enrollmentRepository.findAllByClassId(classId).stream()
+                .map(EnrollmentDetailResponse::from)
                 .toList();
     }
 }

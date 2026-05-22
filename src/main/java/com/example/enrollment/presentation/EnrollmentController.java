@@ -1,6 +1,7 @@
 package com.example.enrollment.presentation;
 
 import com.example.enrollment.application.EnrollmentService;
+import com.example.enrollment.domain.enrollment.EnrollmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +41,12 @@ public class EnrollmentController {
     public ResponseEntity<List<EnrollmentResponse>> findMyEnrollments(
             @RequestHeader("X-User-Id") Long userId) {
         return ResponseEntity.ok(enrollmentService.findMyEnrollments(userId));
+    }
+
+    @GetMapping("/classes/{classId}/enrollments")
+    public ResponseEntity<List<EnrollmentDetailResponse>> getEnrollments(
+            @PathVariable Long classId,
+            @RequestHeader("X-User-Id") Long userId){
+        return ResponseEntity.ok(enrollmentService.getEnrollmentsByClass(classId,userId));
     }
 }

@@ -18,7 +18,10 @@ public enum ErrorCode {
     ENROLLMENT_DUPLICATE(HttpStatus.CONFLICT, "이미 신청한 강의입니다."),
     ENROLLMENT_ALREADY_CANCELLED(HttpStatus.BAD_REQUEST, "이미 취소된 신청입니다."),
     ENROLLMENT_CANCEL_PERIOD_EXPIRED(HttpStatus.BAD_REQUEST, "취소 가능 기간(7일)이 초과되었습니다."),
-    ENROLLMENT_INVALID_STATUS(HttpStatus.BAD_REQUEST, "현재 상태에서는 불가능한 작업입니다.");
+    ENROLLMENT_INVALID_STATUS(HttpStatus.BAD_REQUEST, "현재 상태에서는 불가능한 작업입니다."),
+
+    //Authorization
+    NOT_CLASS_OWNER(HttpStatus.FORBIDDEN, "강의 개설자만 접근할 수 있습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
