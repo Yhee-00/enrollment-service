@@ -5,9 +5,10 @@ import com.example.enrollment.common.exception.BusinessException;
 import com.example.enrollment.domain.clazz.Class;
 import com.example.enrollment.domain.clazz.ClassRepository;
 import com.example.enrollment.domain.clazz.ClassStatus;
+import com.example.enrollment.domain.enrollment.Enrollment;
+import com.example.enrollment.domain.enrollment.EnrollmentRepository;
 import com.example.enrollment.presentation.EnrollmentDetailResponse;
 import jakarta.transaction.Transactional;
-import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +26,8 @@ class EnrollmentIntegrationTest {
     EnrollmentService enrollmentService;
     @Autowired
     ClassRepository classRepository;
+    @Autowired
+    EnrollmentRepository enrollmentRepository;
 
     @Test
     void DRAFT_상태_강의_신청_시_예외(){
@@ -67,13 +70,28 @@ class EnrollmentIntegrationTest {
     }
 
     @Test
-    void 크리에이터가_아닌_유저_수강생_목록_조회_시_예외(){
+    void 크리에이터가_아닌_사용자_수강생_목록_조회_시_예외(){
         Class clazz = Class.create("제목","설명",10000,30,
                 LocalDate.now(), LocalDate.now().plusMonths(1),1L);
         clazz.changeStatus(ClassStatus.OPEN);
         classRepository.save(clazz);
 
         assertThatThrownBy(() -> enrollmentService.getEnrollmentsByClass(clazz.getId(), 42L))
+                .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    void 본인이_아닌_사용자가_confirm_시_예외(){
+        Enrollment saved = enrollmentRepository.save(Enrollment.create(1L,1L));
+        assertThatThrownBy(() ->  enrollmentService.confirm(saved.getId(),3L))
+                .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    void 본인이_아닌_사용자가_cancel_시_예외(){
+        Enrollment saved = enrollmentRepository.save(Enrollment.create(1L,1L));
+
+        assertThatThrownBy(() ->  enrollmentService.cancel(saved.getId(),3L))
                 .isInstanceOf(BusinessException.class);
     }
 }

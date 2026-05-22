@@ -53,6 +53,9 @@ public class EnrollmentService {
     public EnrollmentResponse confirm(Long enrollmentId, Long userId) {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENROLLMENT_NOT_FOUND));
+        if(!enrollment.getUserId().equals(userId)){
+            throw new BusinessException(ErrorCode.NOT_ENROLLMENT_OWNER);
+        }
         enrollment.confirm();
         return EnrollmentResponse.from(enrollment);
     }
@@ -61,6 +64,9 @@ public class EnrollmentService {
     public EnrollmentResponse cancel(Long enrollmentId, Long userId) {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENROLLMENT_NOT_FOUND));
+        if(!enrollment.getUserId().equals(userId)){
+            throw new BusinessException(ErrorCode.NOT_ENROLLMENT_OWNER);
+        }
         enrollment.cancel();
         return EnrollmentResponse.from(enrollment);
     }

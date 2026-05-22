@@ -21,8 +21,8 @@ public enum ErrorCode {
     ENROLLMENT_INVALID_STATUS(HttpStatus.BAD_REQUEST, "현재 상태에서는 불가능한 작업입니다."),
 
     //Authorization
-    NOT_CLASS_OWNER(HttpStatus.FORBIDDEN, "강의 개설자만 접근할 수 있습니다.");
-
+    NOT_CLASS_OWNER(HttpStatus.FORBIDDEN, "강의 개설자만 접근할 수 있습니다."),
+    NOT_ENROLLMENT_OWNER(HttpStatus.FORBIDDEN, "본인 신청만 처리할 수 있습니다.");
     private final HttpStatus httpStatus;
     private final String message;
 }
