@@ -23,6 +23,7 @@ public enum ErrorCode {
     //Authorization
     NOT_CLASS_OWNER(HttpStatus.FORBIDDEN, "강의 개설자만 접근할 수 있습니다."),
     NOT_ENROLLMENT_OWNER(HttpStatus.FORBIDDEN, "본인 신청만 처리할 수 있습니다.");
+
     private final HttpStatus httpStatus;
     private final String message;
 }
